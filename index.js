@@ -20,11 +20,13 @@ switch(process.platform) {
 
 var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
-var copy = GLOBAL.copy = exports.copy = function(text) {
+var copy = GLOBAL.copy = exports.copy = function(text, mode) {
 	var child = spawn(config.copy.command, config.copy.args);
 
+  mode = mode || false;
+
 	child
-		.on("exit", function() { console.log("Copy complete"); })
+		.on("exit", function() { if(mode === '-s') return; console.log("Copy complete"); })
 		.stderr.on("data", function(err) { console.error(err.toString()); });
 
 	if(text.pipe) { text.pipe(child.stdin); }
